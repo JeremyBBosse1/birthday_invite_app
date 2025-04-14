@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ event.title }}</title>
+</head>
+<body>
+  <h1>{{ event.title }}</h1>
+  <p>{{ event.description }}</p>
+  <p>When: {{ event.start_time }} - {{ event.end_time }}</p>
+  <p>Where: {{ event.location }}</p>
+
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "SocialEvent",
+    "name": "{{ event.title }}",
+    "startDate": "{{ event.start_time|date:'c' }}",
+    "endDate": "{{ event.end_time|date:'c' }}",
+    "location": {
+      "@type": "Place",
+      "name": "{{ event.location }}"
+    },
+    "description": "{{ event.description }}",
+    "organizer": {
+      "@type": "Person",
+      "name": "{{ event.user.email }}"
+    }
+  }
+  </script>
+</body>
+</html>
