@@ -7,6 +7,7 @@ import Signup from './pages/Signup';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import CreateEvent from './pages/CreateEvent';
+import PrivateRoute from './routes/PrivateRoute';
 
 
 function App(){
@@ -20,6 +21,22 @@ function App(){
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/create-event" element={<CreateEvent />} />
+        <Route 
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/create"
+          element={
+            <PrivateRoute>
+              <CreateEvent />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );
