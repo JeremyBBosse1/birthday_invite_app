@@ -24,7 +24,7 @@ const handleSubmit = async e =>{
     ...formData,
     invitees: formData.invitees.split(',').map(email => email.trim()),
   };
-  await axios.post('/api/events/', payload);
+  await axios.post('/api/events/', payload, {headers: authHeader()});
   alert('Event created and invitations sent!');
 };
 
