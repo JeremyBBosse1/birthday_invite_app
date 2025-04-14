@@ -44,3 +44,5 @@ return (
     </form>
   );
 }
+
+export default CreateEvent;
