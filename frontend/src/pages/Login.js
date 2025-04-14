@@ -1,26 +1,34 @@
 import React, { useState } from 'react';
-import { login } from '../utils/auth';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { setAccessToken } from '../utils/auth';
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({email: '', password: ''});
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const handleChange = e => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      await login(email, password);
-      alert ('Login successful!');
-      window.location.href = '/';
-    } catch (error) {
-      alert('Login failed. Please check credentials.');
+      const response = await axios.post('/api/token/', formData);
+      setAccessToken(response.data.access);
+      navigate('/dashboard');
+    } catch (err) {
+      setError('Invalid credentials');
     }
   };
   
   return(
     <form onSubmit={handleSubmit}>
       <h2>Login</h2>
-      <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required />
-      <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required />
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <input name="email" type="email" placeholder="Email" onChange={handleChange} required />
+      <input name="password" type="password" placeholder="Password" onChange={handleChange} required />
       <button type="submit">Login</button>
     </form>
   );
