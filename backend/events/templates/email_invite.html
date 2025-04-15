@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ email_subject }}</title>
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@type": "SocialEvent",
+        "name": "{{ title }}",
+        "startDate": "{{ start_time|date:'c' }}",
+        "endDate": "{{ end_time|date:'c' }}",
+        "location": {
+          "@type": "Place",
+          "name": "{{ location }}"
+        },
+        "description": "{{ description }}",
+        "organizer": {
+          "@type": "Person",
+          "name": "{{ user.username }}",
+          "email": "{{ from_email }}"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h2>{{ title }}</h2>
+    <p><strong>When:</strong> {{ start_time }} – {{ end_time }}</p>
+    <p><strong>Where:</strong> {{ location }}</p>
+    <p><strong>Hosted by:</strong> {{ user.username }}</p>
+    <p><strong>Message:</strong></p>
+    <p>{{ email_body }}</p>
+    <hr />
+    <p>You received this because you were invited to a birthday event 🎉</p>
+  </body>
+</html>
