@@ -1,20 +1,98 @@
-version: '3'
+version: '3.8'
+
 services:
+  postgres:
+    image: postgres:14
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: birthday_db
+      POSTGRES_USER: birthday_user
+      POSTGRES_PASSWORD: birthday_pass
+    networks:
+      - backend
+
+  redis:
+    image: redis:7
+    networks:
+      - backend
+
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn backend.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - ./backend:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=backend.settings
+      - DATABASE_URL=postgres://birthday_user:birthday_pass@postgres:5432/birthday_db
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER=redis://redis:6379/0
+      - EMAIL_HOST=smtp.sendgrid.net
+      - EMAIL_PORT=587
+      - EMAIL_HOST_USER=apikey
+      - EMAIL_HOST_PASSWORD=your_sendgrid_api_key
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - backend
+      - frontend
     ports:
       - "8000:8000"
-    depends_on:
-      - redis
-  redis:
-    image: redis:alpine
+
   celery:
-    build: ./backend
-    command: celery -A birthday_invite_app worker --loglevel=info
+    build:
+      context: ./celery
+      dockerfile: celery.Dockerfile
+    command: celery -A backend worker -l info
     volumes:
       - ./backend:/app
+    depends_on:
+      - backend
+      - redis
+      - postgres
+    networks:
+      - backend
+
+  celery-beat:
+    build:
+      context: ./celery-beat
+      dockerfile: celery-beat.Dockerfile
+    command: celery -A backend beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - backend
+      - redis
+      - postgres
+    networks:
+      - backend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: src/Dockerfile
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
     depends_on:
       - redis
       - backend
+    networks:
+      - frontend
+
+volumes:
+  postgres_data:
+
+networks:
+  backend:
+  frontend:
+
