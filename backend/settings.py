@@ -17,7 +17,7 @@ INSTALLED_APPS = [
     'invitations',
     'django_celery_results',
     'corsheaders',
-    'app',
+    'backend.app.apps.MyAppConfig',  # Ensure your app is included here
 ]
 
 MIDDLEWARE = [
