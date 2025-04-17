@@ -4,12 +4,20 @@ from pathlib import Path
 # BASE_DIR definition (if not already defined)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-INSTALLED_APPS += [
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
     'rest_framework',
     'events',
     'invitations',
     'django_celery_results',
     'corsheaders',
+    'backend.app',
 ]
 
 MIDDLEWARE = [

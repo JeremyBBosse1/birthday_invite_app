@@ -24,7 +24,7 @@ function Signup() {
       return;
     }
     try {
-      await axios.post('/api/register/', { email, password });
+      await axios.post('http://localhost:8000/api/register/', { email, password });
       alert('Sign up successful! You can now log in.');
       navigate('/login');
     } catch (err) {

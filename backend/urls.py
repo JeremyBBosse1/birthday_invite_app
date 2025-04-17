@@ -6,9 +6,10 @@ from events.views import EventViewSet
 router = DefaultRouter()
 router.register(r'events', EventViewSet)
 
-urlpatters = [
-  path('admin/', admin.site.urls),
-  path('api/', include(router.urls)),
-  path('api-auth/', include('rest_framework.urls')),
-  path('api/', include('app.urls')),
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/events/', include(router.urls)),  # This is specifically for events API
+    path('api-auth/', include('rest_framework.urls')),
+    path('api/', include('app.urls')),  # Make sure this is just for app-related APIs like register
 ]
+
