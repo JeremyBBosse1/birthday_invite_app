@@ -1,8 +1,10 @@
 from django.db import models
 
-class TestModel(models.Model):
-    name = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
+class Event(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
 
     def __str__(self):
-        return self.name
+        return self.title
